@@ -24,7 +24,7 @@
 
 ![Assembly](./images/assembly.jpeg)
 
-- **You can tell if .NET Framework has been installed by looking for the `MsCorEE.dll` file in the `%SystemRoot%System32` directory. The existence of this file tells you that .NET FW is installed.** 
+- **You can tell if .NET Framework has been installed by looking for the `MsCorEE.dll` file in the `%SystemRoot%\System32` directory. The existence of this file tells you that .NET FW is installed.** 
 
 - If you want to determine exactly which versions of the .NET FW are installed. Examine the subdirectories under the following directories.
     - `%SystemRoot%System32\Microsoft.NET\Framework`
