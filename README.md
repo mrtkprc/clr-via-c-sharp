@@ -5,7 +5,7 @@
 
 ### This repository contains notes taken from book CLR via C#(Fourth Edition),written by Jeffrey Richter, with examples.
 
-## Chapter 1
+# PART 1
 
 - CLR is just what its name says it is: a runtime that is usable by different and verified programming language.
 - **CLR has no idea which programming language the developer used for the source code.**
@@ -140,4 +140,79 @@ Output of `hello.il`:
 
 `Release: /optimize+ /debug:pdbonly`
 
-Continue from page 5
+Managed applicaitons could actually outperform unmanaged application.
+
+- A JIT compiler can determine if the application is running on Intel Pentium 4 CPU and produce native code that takes advantage of any special offered by Pentium 4.
+- IL is stack based which means all of its instructions push operands onto an execution stack and pop results off the stack.
+- While compiling IL into native CPU instructions, the CLR performs a process called `verification`.
+- C# compile requires you to compile the source code by using the /unsafe compiler switch.
+- **`PEVerify.exe`, which examines all of an assembly's methods and notifies you of any methods that contain unsafe code.**
+
+> The PEVerify tool helps developers who generate Microsoft intermediate language (MSIL) (such as compiler writers and script engine developers) to determine whether their MSIL code and associated metadata meet type safety requirements.
+
+### `NGEN.exe`
+
+> The Native Image Generator (Ngen.exe) is a tool that improves the performance of managed applications. Ngen.exe creates native images, which are files containing compiled processor-specific machine code, and installs them into the native image cache on the local computer. The runtime can use native images from the cache instead of using the just-in-time (JIT) compiler to compile the original assembly.
+
+- Ngen.exe compiles native images for assemblies that target the .NET Framework only. The equivalent native image generator for .NET Core is CrossGen.
+    - Startup performance
+    - Reducing an app's working set.
+
+- A new assembly file containing only this native code instead of IL code is created by `NGEN.exe`. This new file is placed in a folder under the directory with a name like `%SystemRoot%\Assembly\NativeImages_V4.0####_64`
+
+- Managed code can easily call functions contained in DLL's by using a mechanism called `P/Invoke`.
+
+### Compile the code (Please, see example folder: `examples/hello_world_for_csc_exe`)
+
+`csc.exe /out:Program.exe /t:exe /r:MsCorLib.dll Program.cs`
+
+- MsCorLib.dll automatically refereced, we can omit it.
+
+### Windows supports three types of applications.
+
+- To build a console user interface (CUI) => `/t:exe`
+- To build a graphical user interface (CUI) => `/t:winexe`
+- To build windows store app => `/t:appcontainerexe`
+
+### Response File
+- This file contains switch option to build it.
+
+Please, see example folder: `examples/response_file`
+
+`csc.exe @MyProject.rsp A.cs B.cs`
+
+Note: `@` is required to build the source with response file.
+
+#### `%SystemRoot%\Microsoft.NET\Framework64\VXXX` contains default global `csc.rsp` file.
+
+### Referencing assembly
+
+**When you use the `/reference` compiler switch to reference an assembly, you can specify a complete path to a particular file. However, if you don't specify a path, the compiler will search for file in the following places. (ordered listed)**
+
+- Working directory
+- The directory that contains the `csc.exe` file itself.
+- Any directories specified `/lib` compiler switch.
+- `LIB` environment variable.
+
+=> Managed PE file has four main parts.
+- PE32(+) header: is the standard information that windows expects.
+- CLR header: is a small block of information that is specific o modules that require the CLR 
+    - The header includes the major and minor version number of the CLR that module was built for.
+        - Module's entrypoint
+        - Optional strong name digital signature
+- Metadata: is a block of binary data that consists of several table. There are three categories of tables.
+    - Definition tables.
+    - Reference tables.
+    - Manifest tables.
+- IL
+
+To see metadata tables, execute following command.
+`ILDASM Program.exe`
+
+### Using Assembly Linker:
+
+- `csc /t:module RUT.cs`
+- `csc /t:module FUT.cs`
+- `al /out:MultiFileLibrary.dll /t:library FUT.netmodule RUT.netmodule`
+
+Continue from 10.
