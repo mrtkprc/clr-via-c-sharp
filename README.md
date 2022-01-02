@@ -287,7 +287,56 @@ Notes:
 
 - You can specify the multiple semicolon delimited paths. Each path is considered relative to app's basedir.
 
-- Appdir can have folder with assembly name. For example, Program.exe location path can contain folder named `MultiFileLibrary` without configuration file.
+- Appdir can have folder with assembly name. For example, Program.exe location path can contain folder named `MultiFileLibrary` without configuration file. Similar to the other, `AuxFiles` can contain `MultiFileLibrary` folder with `Program.exe.config`
+
+### Fuslogvw.exe
+
+> The Assembly Binding Log Viewer displays details for assembly binds. This information helps you diagnose why the .NET Framework cannot locate an assembly at run time. 
+
+Note: Fuslogvw.exe Screenshot
+![Assembly](./images/fuslogvw.png)
+
+### **Strong named assemblies**
+
+- Strongly named assemblies and weakly named assemblies use same portable exacutable(PE) file format.
+  - PE32(+) Header
+  - CLR header
+  - Metadata
+  - Manifest
+  - IL
+
+- Strongly named assemblies are signed with publishers public/private key pair that uniques identifies the assembly publisher.
+
+- This key pair allows the assembly to be uniquely identified, secured and versioned.
+
+- Strongly named assembly consists of
+  - A File name
+  - A version number
+  - A culture identity
+  - A public key
+
+- Very large public key => Retrieved from hash. It is called publickey token.
+
+**To generate a public/private key pair, you should run `SN.exe` as follows:**
+
+`SN -k MyCompany.snk`
+
+This commands creates a file contain public and pivae key with binary format. After public key is created, you can use SN.exe again to see actual public key following command.
+
+`SN -p MyCompany.snk MyCompany.Publickey sha256`
+
+- Public key token is a 64-bit hash of the public key.
+
+**You can sign assembly with `Project Settings->Signing->Check Sign the assembly`**
+
+![Assembly](./images/signing_with_key.png)
+
+### Global Asssembly Cache (GAC)
+
+GAC Location: **%SystemRoot%\Microsoft.NET**
+
+
+
 
 
 
