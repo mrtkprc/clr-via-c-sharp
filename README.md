@@ -335,6 +335,28 @@ This commands creates a file contain public and pivae key with binary format. Af
 
 GAC Location: **%SystemRoot%\Microsoft.NET**
 
+- You should never assembly manually copy assembly file into GAC. You can use the most common tool for installing a strongly named asembly into GAC which `GACUtil.exe`
+
+- You can't ever place a weakly named assembly into `GAC`.
+
+- MSI is the only tool that is guaranted to be on end-user machines and capable of installing assemblies into `GAC`
+
+- `csc.exe` attempts to find the assembly by lookling 
+  - Working directory.
+  - The directory that contains `csc.exe`
+  - `/lib` compiler switch
+  - `LIB` environment variable
+
+- If you are building an assembly that references Microsoft's `System.Drawing.dll`, you can specify the `/reference:System.Drawing.dll`.
+
+- This file is found at `csc.exe` location. But this isn't the directory where the assembly will be loaded from at runtime.
+
+- It is recommended that you deploy assembly into the GAC only if the assembly is intended to be shared by many applications.
+
+
+
+
+
 
 
 
