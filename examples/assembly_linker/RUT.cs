@@ -1,8 +1,8 @@
 namespace AssemblyLinker
 {
-    class RUT 
+    public class RUT 
 	{         
-        void IntegralOperation()
+        public void IntegralOperation()
         {
             System.Console.WriteLine("Integral Operation");
         }

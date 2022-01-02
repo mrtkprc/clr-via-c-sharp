@@ -1,13 +1,13 @@
 namespace AssemblyLinker
 {
-    class FUT 
+    public class FUT 
 	{         
-        int Add(int a, int b)
+        public int Add(int a, int b)
         {
             return a + b;
         }
 		
-		int Subtract(int a, int b)
+		public int Subtract(int a, int b)
         {
             return a - b;
         }

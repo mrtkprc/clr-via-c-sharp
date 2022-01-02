@@ -215,4 +215,86 @@ To see metadata tables, execute following command.
 - `csc /t:module FUT.cs`
 - `al /out:MultiFileLibrary.dll /t:library FUT.netmodule RUT.netmodule`
 
-Continue from 10.
+### Assembly Version:  
+- This version is stored in AssemblyDef manifest metadata table. The CLR uses this version number when binding to strongly named assembly. This number is extremely important and is used to uniquely identify an assembly. When starting to develop an assembly, you should set the major, minor, build and revision number and shouldn't change them until you are ready to begin work on the next deployable version of your assembly.
+
+- When Assembly-A references a strongly named Assembly-B, Assembly B's version is embedded inside Assembly-A's AssemblyRef table's entry. This way, when CLR need to load Assembly-B, it knows exactly which version Assembly-A was built.
+
+- An assembly that isn't assigned a culture is referred to as being **culture neutral**
+
+- If you're designing an application that some culture specific resource to it, Microsoft highly recommends that you create one assembly that contains your code and your application's default resources. When building, this assembly don't specify a culture.
+
+- Now you can create one or more separate assemblies that contain only culture-specific resources-no code at all.
+
+- Assemblers that are marked with a culture are called satellite assemblies. For these satellite assemblies, assign a culture that accurate reflects the culture of the resource placed in assembly. You should create one satellite assembly for each culture you intend to support.
+
+- You should use `AL.exe` tool to build a satellite assembly. You won't use a compiler because satellite assembly should have no code contained within it. When using `AL.exe`, you specify the desired culture by using the `/culture: text` switch, where text is a string such as `en-us`
+
+- `MSI` file can also install any prerequiste components such as `.NET FW` and `SQL Server`.
+
+- Assemblies deployed to the some directory as the application called `privately deployed` assemblies because assembly files can't be shared with any other application.
+
+### **Simple Administrative Control (Configuration)**
+
+Please, see example folder `examples/assembly_binding`
+
+- The Program.cs references `MultiFileLibrary.dll` contains `FUT.netmodule` and `RUT.netmodule`.
+  1. Source code of Program.cs is like that:
+
+  ```
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Text;
+  using System.Threading.Tasks;
+
+  using AssemblyLinker;
+
+  namespace AssemblyBinding
+  {
+      class Program
+      {
+          static void Main(string[] args)
+          {
+              FUT f = new FUT();
+              var result = f.Add(2,3);
+              Console.WriteLine("Hello Assembly Binding.");
+              Console.WriteLine("Sum operation is done by .netmodule.");
+              Console.WriteLine($"Result: 2 + 3 = {result}");
+              Console.ReadLine();
+          }
+      }
+  }
+  ```
+  2. Compile source code following command:
+      - `csc.exe /out:Program.exe /t:exe /r:MultiFileLibrary.dll Program.cs`
+
+  3. When running the Program.exe, if we delete `MultiFileLibrary.dll`, we will get exception `Unhandled Exception: System.IO.FileNotFoundException: Could not load file or assembly 'MultiFileLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null' or one of its dependencies. The system cannot find the file specified.`
+
+  4. But we can add `.config` file for assembly binding to runtime binding for assemblies:
+  ```
+  <configuration>
+    <runtime>
+      <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+        <probing privatePath="AuxFiles" />
+      </assemblyBinding>
+    </runtime>
+  </configuration>
+  ```
+
+Notes:
+- Whenever the CLR attempts to locate an assembly file, it always looks in the applications directory first and if it can't find the file there, it looks in the `AuxFiles` subdirectories.
+
+- You can specify the multiple semicolon delimited paths. Each path is considered relative to app's basedir.
+
+- Appdir can have folder with assembly name. For example, Program.exe location path can contain folder named `MultiFileLibrary` without configuration file.
+
+
+
+
+
+
+
+
+
+
